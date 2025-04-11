@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="theme-color" content="#262d40" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="eTracker" />
+
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png" />
+
+    <title>eTracker</title>
+    <link rel="icon" href="images/eTracker_favIcon.png" type="image/x-icon" />
+    <link rel="preload" href="images/eTracker_White.png" as="image" />
+    <link rel="preload" href="images/backgroundImage.jpg" as="image" />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="splash-screen">
+      <img
+        src="images/eTracker_White.png"
+        class="splash-logo"
+        alt="eTracker Logo"
+      />
+    </div>
+
+    <div class="app-container">
+      <header>
+        <h1><img src="images/eTracker_Black.png" class="logo" /> Tracker</h1>
+      </header>
+
+      <main>
+        <div class="dashboard">
+          <div class="card total-spending">
+            <h3>Total Spending</h3>
+            <p id="totalSpending">₹0</p>
+          </div>
+          <div class="card total-savings" id="savingsCard">
+            <h3>Total Savings</h3>
+            <p id="totalSavings">₹0</p>
+          </div>
+          <div class="card total-onhand">
+            <h3>Total On-Hand</h3>
+            <p id="totalOnHand">₹0</p>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button id="addExpenseBtn" class="add-expense-btn">
+            Add Expense
+          </button>
+          <button id="resetBtn" class="reset-btn">Backup & Reset</button>
+        </div>
+      </main>
+
+      <!-- Add Expense Modal -->
+      <div id="expenseModal" class="modal">
+        <div class="modal-content">
+          <!-- <span class="close">&times;</span> -->
+          <h2 id="modalTitle" style="text-align: center">Add Expense</h2>
+          <div id="calendarContainer">
+            <div class="month-header">
+              <button id="prevMonth">&lt;</button>
+              <h3 id="currentMonthYear">Month Year</h3>
+              <button id="nextMonth">&gt;</button>
+            </div>
+            <div id="calendar"></div>
+            <div class="month-actions">
+              <button id="openingBalanceBtn">Opening Balance</button>
+              <button id="addFromSavingsBtn">Add From Savings</button>
+              <button id="viewReportBtn">View Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opening Balance Modal -->
+      <div id="openingBalanceModal" class="modal">
+        <div class="modal-content small">
+          <!-- <span class="close">&times;</span> -->
+          <h2 id="modalTitle" style="text-align: center">Opening Balance</h2>
+          <div class="openingInputContainer">
+            <input
+              type="number"
+              id="openingBalanceInput"
+              placeholder="Enter amount"
+            />
+            <button id="submitOpeningBalance">Submit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expense Entry Modal -->
+      <div id="expenseEntryModal" class="modal">
+        <div class="modal-content">
+          <!-- <span class="close">&times;</span> -->
+          <h2 id="expenseDateTitle" style="text-align: center">
+            Expenses for Date
+          </h2>
+          <div id="expenseEntries">
+            <!-- Dynamic content will be added here -->
+          </div>
+          <button id="addNewExpenseRow">+ Add Expense</button>
+          <button id="submitExpenses">Submit</button>
+        </div>
+      </div>
+
+      <!-- Add From Savings Modal -->
+      <div id="addFromSavingsModal" class="modal">
+        <div class="modal-content small">
+          <!-- <span class="close">&times;</span> -->
+          <h2 id="modalTitle" style="text-align: center">Add From Savings</h2>
+          <p style="text-align: center">
+            Total Savings: <span id="totalSavingsDisplay">₹0</span>
+          </p>
+          <div class="addFromSavingInputContainer">
+            <input
+              type="number"
+              id="addFromSavingsInput"
+              placeholder="Enter amount"
+            />
+            <button id="submitAddFromSavings">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month Report Modal -->
+      <div id="monthReportModal" class="modal">
+        <div class="modal-content large">
+          <!-- <span class="close">&times;</span> -->
+          <h2 id="monthReportTitle" style="text-align: center">Month Report</h2>
+          <div id="monthReportContent">
+            <!-- Dynamic content will be added here -->
+          </div>
+          <button id="downloadReportBtn" class="download-btn">
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Savings Breakdown Modal -->
+    <div id="savingsDetailsModal" class="modal">
+      <div class="modal-content">
+        <!-- <span class="close">&times;</span> -->
+        <h2 id="modalTitle" style="text-align: center">Savings Breakdown</h2>
+        <div id="savingsDetailsContent"></div>
+        <button id="downloadSavingsBtn" class="download-btn">
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((registration) => {
+              console.log("ServiceWorker registration successful");
+            })
+            .catch((error) => {
+              console.log("ServiceWorker registration failed: ", error);
+            });
+        });
+      }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
